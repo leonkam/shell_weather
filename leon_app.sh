@@ -54,15 +54,29 @@ done
 
 display_forecast() {	
 	while IFS=, read -r date time temp weather description wind_speed; do
-		if [[ $time == "09:00" ]] || [[ $time == "18:00" ]]; then
+		# Removes the header from the imported csv
+		if [ $date = "date" ]; then
+			continue
+		fi
+		
+		if [[ $time == "09:00" ]] || [[ $time == "18:00" ]] || [[ $mode == "weather" ]]; then
 			echo "===================================="
 			echo $date
 			echo $time
-			echo "The temperature is $temp C"
-			echo "The weather is $weather, with $description"
-			echo "The wind speed is $wind_speed km/h"
+			echo "The temperature is $temp C."
+			echo "The weather is $weather, with $description."
+			echo "The wind speed is $wind_speed mph."
 		fi
 	done < $FILE_NAME 
 }
 
-display_forecast
+echo "Do you want to see the weather forecast, add a task, or exit?"
+read -p "Press 1, 2, or 3 respectively" num
+
+if [ $num = 1 ]; then
+	display_forecast
+elif [ $num = 2 ]; then
+	# function
+else
+	exit 0
+fi
