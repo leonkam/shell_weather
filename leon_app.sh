@@ -5,7 +5,7 @@ elif [ $num = 2 ]; then
         mode="forecast"
 fi
 
-
+FILE_NAME="weather_forecast.csv"
 API_KEY="18a1bffb4847fb5627bea7c521d471f2"
 location="london"
 geoloc=$(curl -s "http://api.openweathermap.org/geo/1.0/direct?q=$location&appid=$API_KEY" | jq ".[0]")
@@ -36,7 +36,7 @@ len=$( echo "$info" | jq length )
 
 
 # Creates csv database of weather forecast
-echo "date,time,temp,weather,description,wind_speed,task" > weather_forecast.csv
+echo "date,time,temp,weather,description,wind_speed,task" > $FILE_NAME
 # Loops through json array 
 for i in $(seq 0 $((len-1))); do
 	dt=$(echo "$info" | jq -r ".[$i].dt")
@@ -48,6 +48,21 @@ for i in $(seq 0 $((len-1))); do
 	time=$(date -d "$dt" "+%H:%M")	
 	
 	# Writes line to csv database
-	echo "$date,$time,$temp,$weather,$description,$wind_speed," >> weather_forecast.csv
+	echo "$date,$time,$temp,$weather,$description,$wind_speed," >> $FILE_NAME
 done
 
+
+display_forecast() {	
+	while IFS=, read -r date time temp weather description wind_speed; do
+		if [[ $time == "09:00" ]] || [[ $time == "18:00" ]]; then
+			echo "===================================="
+			echo $date
+			echo $time
+			echo "The temperature is $temp C"
+			echo "The weather is $weather, with $description"
+			echo "The wind speed is $wind_speed km/h"
+		fi
+	done < $FILE_NAME 
+}
+
+display_forecast
