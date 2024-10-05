@@ -91,7 +91,7 @@ display_forecast() {
                                 echo "===================================="
                                 echo $date
                                 echo $time
-                                echo "The temperature is $temp C."
+                                echo "The temperature is $temp°C."
                                 echo "The weather is $weather, with $description."
                                 echo "The wind speed is $wind_speed mph."
                                 echo $task
